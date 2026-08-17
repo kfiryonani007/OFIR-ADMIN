@@ -51,6 +51,52 @@ app.use(express.json({ limit: '256kb' }));
 function str(v) { return v == null ? '' : String(v); }
 
 /* ============================================================
+   LEAD EMAIL NOTIFICATION — optional. If RESEND_API_KEY /
+   LEAD_NOTIFY_EMAIL aren't set, this quietly does nothing: leads
+   still save to Supabase and show in the admin panel either way,
+   so a misconfigured or down email provider never blocks a lead.
+   ============================================================ */
+const SERVICE_LABELS = {
+  homes: 'בתים פרטיים', interior: 'עיצוב ותכנון פנים', permits: 'היתרי בנייה והסדרת חריגות',
+  pools: 'בריכות שחייה', business: 'רישוי עסקים', farms: 'משקים ונחלות', other: 'אחר'
+};
+function esc(v) { return str(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+async function sendLeadNotification(lead) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.LEAD_NOTIFY_EMAIL;
+  if (!apiKey || !to) return;
+  const rows = [
+    ['שם', lead.name], ['טלפון', lead.phone], ['אימייל', lead.email], ['עיר', lead.city],
+    ['שירות מבוקש', SERVICE_LABELS[lead.service] || lead.service], ['הודעה', lead.message],
+    ['הגיע מדף', lead.source_page]
+  ].filter(([, v]) => str(v).trim());
+  const html = '<div dir="rtl" style="font-family:sans-serif;font-size:15px;line-height:1.7;">' +
+    '<h2>פנייה חדשה מהאתר</h2>' +
+    rows.map(([k, v]) => `<p><b>${esc(k)}:</b> ${esc(v)}</p>`).join('') +
+    '</div>';
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'David Balaish Architecture <onboarding@resend.dev>',
+        to: [to],
+        subject: `פנייה חדשה מהאתר — ${lead.name || 'ללא שם'}`,
+        html
+      }),
+      signal: controller.signal
+    });
+    if (!r.ok) console.error('Lead email failed:', r.status, await r.text().catch(() => ''));
+  } catch (e) {
+    console.error('Lead email error:', e.message);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/* ============================================================
    ADMIN AUTH — signed session cookie, PIN from .env
    ============================================================ */
 function parseCookies(req) {
@@ -144,6 +190,7 @@ app.post('/api/lead', async (req, res) => {
     source_url: str(b.source_url), project_ref: str(b.project_ref)
   });
   if (error) return res.status(500).json({ error: 'insert_failed' });
+  await sendLeadNotification(b);
   res.json({ ok: true });
 });
 
