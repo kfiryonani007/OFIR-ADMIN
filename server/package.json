@@ -1,0 +1,17 @@
+{
+  "name": "david-balaish-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Local backend for David Balaish Architecture — serves the site, reads/writes leads, analytics, projects, stories and settings via Supabase.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
+    "compression": "^1.8.1",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2"
+  }
+}

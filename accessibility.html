@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הצהרת נגישות | David Balaish Architecture</title>
+<meta name="description" content="הצהרת הנגישות של אתר David Balaish Architecture והתאמתו להנחיות WCAG.">
+<link rel="canonical" href="https://davidbalaish.co.il/accessibility.html">
+<meta name="theme-color" content="#1B1D16">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="David Balaish Architecture">
+<meta property="og:title" content="הצהרת נגישות | David Balaish Architecture">
+<meta property="og:description" content="הצהרת הנגישות של אתר David Balaish Architecture והתאמתו להנחיות WCAG.">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="icon" href="assets/logo.jpg">
+<link rel="stylesheet" href="assets/styles.css">
+<noscript><style>.reveal{opacity:1!important;translate:none!important}[data-cine],[data-cine]>*{opacity:1!important;transform:none!important}</style></noscript>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"בית","item":"https://davidbalaish.co.il/index.html"},{"@type":"ListItem","position":2,"name":"הצהרת נגישות","item":"https://davidbalaish.co.il/accessibility.html"}]}</script>
+</head>
+<body><a class="skip-link" href="#main">דלג לתוכן הראשי</a>
+<a class="whatsapp-btn" href="https://wa.me/972503851111" target="_blank" rel="noopener" aria-label="פנייה בוואטסאפ">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.6 6.3A8.9 8.9 0 0 0 3.2 16.8L2 22l5.3-1.4A8.9 8.9 0 0 0 21 12a8.9 8.9 0 0 0-3.4-5.7ZM12 20a7.9 7.9 0 0 1-4-1.1l-.3-.2-2.8.7.8-2.7-.2-.3A7.9 7.9 0 1 1 12 20Z" fill="#fff"/><path d="M9 7.6c.2 0 .4 0 .5.3l.8 1.9c.1.2 0 .4-.1.5l-.5.6c-.1.2-.1.3 0 .5.4.7 1.5 1.9 2.6 2.3.2.1.3 0 .5-.1l.6-.6c.1-.1.3-.2.5-.1l1.8.9c.2.1.3.3.3.5 0 .8-.7 1.6-1.5 1.6-2.6 0-5.6-3-5.6-5.7 0-.9.8-1.6 1.1-1.6Z" fill="#fff"/></svg>
+</a>
+<header id="site-header">
+  <div class="wrap nav">
+    <a class="logo" href="index.html" aria-label="David Balaish Architecture, לעמוד הבית"><img src="assets/logo-new.png" alt="David Balaish Architecture"></a>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="index.html">בית</a></li>
+      <li><a href="about.html" data-page="about.html">מי אנחנו</a></li>
+      <li class="has-mega">
+        <a href="services.html" data-page="services.html">שירותים</a>
+        <div class="mega">
+          <a href="service-homes.html">בתים פרטיים <span aria-hidden="true">&#8594;</span></a>
+          <a href="service-interior.html">עיצוב ותכנון פנים <span aria-hidden="true">&#8594;</span></a>
+          <a href="service-permits.html">היתרי בנייה והסדרת חריגות <span aria-hidden="true">&#8594;</span></a>
+          <a href="service-pools.html">בריכות שחייה <span aria-hidden="true">&#8594;</span></a>
+          <a href="service-business.html">רישוי עסקים <span aria-hidden="true">&#8594;</span></a>
+          <a href="service-farms.html">משקים ונחלות <span aria-hidden="true">&#8594;</span></a>
+        </div>
+      </li>
+      <li><a href="projects.html" data-page="projects.html">פרויקטים</a></li>
+      <li><a href="contact.html" data-page="contact.html">יצירת קשר</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="phone" href="tel:0503851111">050-385-1111</a>
+      <a class="btn btn-solid" href="contact.html" data-specular>לתיאום פגישה</a>
+      <button class="burger" id="burgerBtn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer" aria-hidden="true">
+  <button class="drawer-close" id="drawerClose" aria-label="סגירת תפריט">&times;</button>
+  <div class="drawer-logo"><img src="assets/logo-new.png" alt="David Balaish Architecture"></div>
+  <a href="index.html">בית</a>
+  <a href="about.html">מי אנחנו</a>
+  <a href="services.html">שירותים</a>
+  <a href="projects.html">פרויקטים</a>
+  <a href="contact.html">יצירת קשר</a>
+  <a href="contact.html" class="drawer-cta">לתיאום פגישה</a>
+</div>
+<a href="contact.html" class="mobile-sticky-cta">לתיאום פגישה</a>
+<main id="main">
+<section class="page-hero" style="padding-bottom:50px;">
+  <div class="page-hero-logo"><img src="assets/logo-u.png" alt="" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="נתיב ניווט"><a href="index.html">בית</a><span class="sep">/</span><span aria-current="page">הצהרת נגישות</span></nav>
+    <p class="eyebrow">מסמך</p>
+    <h1>הצהרת נגישות</h1>
+  </div>
+</section>
+<section>
+  <div class="wrap doc reveal">
+    <p class="updated">עודכן לאחרונה: יולי 2026</p>
+    <p>משרד David Balaish Architecture רואה חשיבות רבה בהנגשת האתר לכלל המשתמשים, לרבות אנשים עם מוגבלות, ופועל להתאמת האתר להנחיות הנגישות המקובלות (WCAG) ככל האפשר.</p>
+    <h2>מה הונגש באתר</h2>
+    <ul class="bullets">
+      <li>מבנה סמנטי וכותרות מדורגות לניווט ברור.</li>
+      <li>ניווט מלא באמצעות מקלדת וסימון מיקוד (focus) נראה.</li>
+      <li>ניגודיות צבעים מותאמת לקריאוּת הטקסט.</li>
+      <li>טקסט חלופי לתמונות ותוויות לשדות טופס.</li>
+      <li>תמיכה בהעדפת "הפחתת תנועה" (reduced motion) של המערכת.</li>
+      <li>קישור "דלג לתוכן הראשי" בתחילת כל עמוד.</li>
+      <li>סרגל נגישות צף (האייקון בפינה) המאפשר הגדלת טקסט, ניגודיות גבוהה, גווני אפור, הדגשת קישורים, פונט קריא ועצירת אנימציות, בכל עמוד באתר.</li>
+    </ul>
+    <h2>דרכי פנייה בנושא נגישות</h2>
+    <p>נתקלתם בקושי בנגישות האתר? נשמח לדעת ולתקן. ניתן לפנות לרכז הנגישות של המשרד:</p>
+    <ul class="bullets">
+      <li>טלפון: 050-385-1111</li>
+      <li>דוא"ל: davidbalaish1@gmail.com</li>
+    </ul>
+    <p>נטפל בפנייתכם בהקדם ונעשה מאמץ לספק מענה הולם.</p>
+  </div>
+</section>
+</main><footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo"><img src="assets/logo-new.png" alt="David Balaish Architecture"></div>
+        <p style="max-width:32ch; font-size:14px;">משרד אדריכלות המלווה תכנון, היתרים ומעטפת מקצועית מלאה בכל רחבי הארץ.</p>
+      </div>
+      <div>
+        <p class="foot-h">ניווט</p>
+        <ul>
+          <li><a href="about.html">מי אנחנו</a></li>
+          <li><a href="services.html">שירותים</a></li>
+          <li><a href="projects.html">פרויקטים</a></li>
+          <li><a href="contact.html">יצירת קשר</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="foot-h">שירותים</p>
+        <ul>
+          <li><a href="service-homes.html">בתים פרטיים</a></li>
+          <li><a href="service-permits.html">היתרי בנייה</a></li>
+          <li><a href="service-pools.html">בריכות שחייה</a></li>
+          <li><a href="service-business.html">רישוי עסקים</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="foot-h">יצירת קשר</p>
+        <ul>
+          <li><a href="tel:0503851111">050-385-1111</a></li>
+          <li><a href="mailto:davidbalaish1@gmail.com">davidbalaish1@gmail.com</a></li>
+        </ul>
+        <div class="social-icons">
+          <a href="https://instagram.com/david_balaish" target="_blank" rel="noopener" aria-label="אינסטגרם">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://facebook.com/davidbalaishh" target="_blank" rel="noopener" aria-label="פייסבוק">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 8h-2a2 2 0 0 0-2 2v2H9v3h2v7h3v-7h2.2l.8-3H14V8.5c0-.6.4-1 1-1h2V4h-2a4 4 0 0 0-4 4v2H9"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; <span data-year>2026</span> David Balaish Architecture. כל הזכויות שמורות.</span>
+      <span class="legal">
+        <a href="privacy.html">מדיניות פרטיות</a>
+        <a href="accessibility.html">הצהרת נגישות</a>
+        <a href="terms.html">תנאי שימוש</a>
+      </span>
+    </div>
+  </div>
+    <div class="foot-credit">
+      <span>עיצוב ופיתוח</span>
+      <a href="https://topweb.co.il" target="_blank" rel="noopener" aria-label="Topweb: משרד פרסום ובניית אתרים">
+        <img src="assets/topweb.svg" alt="Topweb" onerror="this.replaceWith(Object.assign(document.createElement('b'),{textContent:'TOPWEB',className:'foot-credit-text'}))">
+      </a>
+    </div>
+
+
+</footer>
+<script src="assets/i18n.js"></script>
+<script src="assets/motion.js"></script>
+<script src="assets/analytics.js"></script>
+<script src="assets/content.js"></script>
+<script src="assets/site-data.js"></script>
+<script src="assets/specular-button.js"></script>
+<script src="assets/accessibility-widget.js"></script>
+<script src="assets/main.js"></script>
+</body>
+</html>

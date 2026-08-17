@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>לוח בקרה | David Balaish Architecture</title>
+<link rel="icon" href="assets/logo.jpg">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+
+<div id="dashView" class="dash-shell">
+
+  <aside class="side-nav">
+    <div class="side-brand"><b>DAVID BALAISH</b><em>ADMIN</em></div>
+    <nav class="side-links">
+      <button type="button" class="side-link is-active" data-view="overview">
+        <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="12" width="8" height="9" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg></span>
+        מסך בקרה
+      </button>
+      <button type="button" class="side-link" data-view="leads">
+        <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+        מערכת לידים
+        <span class="side-badge" id="navLeadsBadge" hidden>0</span>
+      </button>
+      <button type="button" class="side-link" data-view="projects">
+        <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-8h6v8"/></svg></span>
+        מערכת פרויקטים
+        <span class="side-badge" id="navProjBadge" hidden>0</span>
+      </button>
+      <button type="button" class="side-link" data-view="stories">
+        <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19l1-5.8L3.6 9.1l5.8-.8z"/></svg></span>
+        סיפורי הצלחה
+        <span class="side-badge" id="navStoryBadge" hidden>0</span>
+      </button>
+      <button type="button" class="side-link" data-view="settings">
+        <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1Z"/></svg></span>
+        הגדרות אתר
+      </button>
+    </nav>
+    <div class="side-foot">
+      <button id="resetBtn" class="a-btn a-btn-ghost side-foot-btn" title="איפוס לידים ואנליטיקה לאפס">איפוס נתונים</button>
+      <button id="logoutBtn" class="a-btn a-btn-ghost side-foot-btn">יציאה</button>
+    </div>
+  </aside>
+
+  <div class="dash-body">
+    <header class="dash-top">
+      <button type="button" id="sideToggle" class="side-toggle" aria-label="תפריט">
+        <span></span><span></span><span></span>
+      </button>
+      <h1 class="dash-top-title" id="viewTitle">מסך בקרה</h1>
+      <div class="dash-top-right">
+        <span id="liveDot" class="live-dot" title="מתעדכן אוטומטית"></span>
+        <span class="dash-user">מחובר</span>
+      </div>
+    </header>
+
+    <main class="dash-main">
+
+      <!-- ============ OVERVIEW ============ -->
+      <section class="view" data-view-panel="overview">
+        <h2 class="dash-h">לידים</h2>
+        <div class="kpi-row">
+          <div class="kpi"><span class="kpi-label">סה"כ לידים</span><b class="kpi-num" id="k-total">0</b></div>
+          <div class="kpi"><span class="kpi-label">היום</span><b class="kpi-num" id="k-today">0</b></div>
+          <div class="kpi"><span class="kpi-label">השבוע</span><b class="kpi-num" id="k-week">0</b></div>
+          <div class="kpi"><span class="kpi-label">החודש</span><b class="kpi-num" id="k-month">0</b></div>
+        </div>
+
+        <h2 class="dash-h">אנליטיקה</h2>
+        <div class="kpi-row">
+          <div class="kpi"><span class="kpi-label">צפיות בעמודים</span><b class="kpi-num" id="a-views">0</b></div>
+          <div class="kpi"><span class="kpi-label">מבקרים ייחודיים</span><b class="kpi-num" id="a-sessions">0</b></div>
+          <div class="kpi"><span class="kpi-label">זמן ממוצע בעמוד</span><b class="kpi-num" id="a-time">0</b></div>
+          <div class="kpi"><span class="kpi-label">לחיצות</span><b class="kpi-num" id="a-clicks">0</b></div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="card"><h3>צפיות ב-14 הימים האחרונים</h3><div id="ch-days" class="bars-time"></div></div>
+          <div class="card"><h3>מכשירים</h3><div class="donut-wrap"><div id="ch-devices-donut" class="donut"></div><div id="ch-devices-legend" class="legend"></div></div></div>
+          <div class="card"><h3>מקורות תנועה</h3><div id="ch-sources" class="bar-list"></div></div>
+          <div class="card"><h3>עמודים מובילים</h3><div id="ch-pages" class="bar-list"></div></div>
+          <div class="card"><h3>לחיצות מובילות</h3><div id="ch-clicks" class="bar-list"></div></div>
+          <div class="card"><h3>לידים לפי שירות</h3><div id="ch-services" class="bar-list"></div></div>
+        </div>
+      </section>
+
+      <!-- ============ LEADS ============ -->
+      <section class="view" data-view-panel="leads" hidden>
+        <h2 class="dash-h">רשימת לידים</h2>
+        <div class="leads-controls">
+          <input id="searchInput" type="search" placeholder="חיפוש לפי שם, טלפון, אימייל, עיר או הודעה…">
+          <select id="serviceFilter">
+            <option value="">כל השירותים</option>
+            <option>בתים פרטיים</option>
+            <option>עיצוב ותכנון פנים</option>
+            <option>היתרי בנייה והסדרת חריגות</option>
+            <option>בריכות שחייה</option>
+            <option>רישוי עסקים</option>
+            <option>משקים ונחלות</option>
+            <option>אחר</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>תאריך ושעה</th><th>שם</th><th>טלפון</th><th>אימייל</th>
+                <th>עיר</th><th>שירות</th><th>הודעה</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="leadsBody"></tbody>
+          </table>
+          <p id="leadsEmpty" class="leads-empty" hidden>לא נמצאו לידים.</p>
+        </div>
+      </section>
+
+      <!-- ============ PROJECTS ============ -->
+      <section class="view" data-view-panel="projects" hidden>
+        <h2 class="dash-h">ניהול פרויקטים</h2>
+        <div class="proj-admin">
+          <form id="projForm" class="card proj-form">
+            <input type="hidden" id="p-id">
+            <h3 id="projFormTitle">הוספת פרויקט חדש</h3>
+            <div class="pf-row">
+              <div class="a-field"><label for="p-title">שם הפרויקט *</label><input id="p-title" type="text" required></div>
+              <div class="a-field"><label for="p-city">עיר / יישוב</label><input id="p-city" type="text"></div>
+            </div>
+            <div class="a-field">
+              <label>תחומים (לסינון)</label>
+              <div class="pf-cats">
+                <label><input type="checkbox" value="homes"> בתים פרטיים</label>
+                <label><input type="checkbox" value="interior"> עיצוב פנים</label>
+                <label><input type="checkbox" value="permits"> היתרים וחריגות</label>
+                <label><input type="checkbox" value="pools"> בריכות</label>
+                <label><input type="checkbox" value="business"> רישוי עסקים</label>
+                <label><input type="checkbox" value="farms"> משקים ונחלות</label>
+              </div>
+            </div>
+            <div class="a-field"><label for="p-image">קישור לתמונה ראשית</label><input id="p-image" type="text" placeholder="assets/projects/..."></div>
+            <div class="a-field"><label for="p-gallery">גלריית תמונות נוספות (קישור בכל שורה)</label><textarea id="p-gallery" rows="4" placeholder="assets/projects/xxx/01.webp&#10;assets/projects/xxx/02.webp"></textarea></div>
+            <div class="a-field"><label for="p-summary">תיאור קצר</label><textarea id="p-summary" rows="2"></textarea></div>
+            <div class="pf-row">
+              <div class="a-field"><label for="p-challenge">האתגר</label><textarea id="p-challenge" rows="2"></textarea></div>
+              <div class="a-field"><label for="p-solution">הפתרון</label><textarea id="p-solution" rows="2"></textarea></div>
+            </div>
+            <div class="a-field"><label for="p-result">התוצאה</label><textarea id="p-result" rows="2"></textarea></div>
+
+            <div class="seo-box">
+              <h4 class="seo-title">הגדרות SEO</h4>
+              <p class="seo-hint">כותרת ותיאור לעמוד הפרויקט במנועי החיפוש. אם משאירים ריק, נשתמש אוטומטית בשם הפרויקט ובתיאור הקצר.</p>
+              <div class="a-field"><label for="p-meta-title">META Title</label><input id="p-meta-title" type="text" maxlength="70"><span class="seo-count" id="p-meta-title-count"></span></div>
+              <div class="a-field"><label for="p-meta-desc">META Description</label><textarea id="p-meta-desc" rows="2" maxlength="180"></textarea><span class="seo-count" id="p-meta-desc-count"></span></div>
+            </div>
+
+            <div class="pf-row">
+              <div class="a-field">
+                <label for="p-sort">סדר תצוגה</label>
+                <input id="p-sort" type="number" value="0">
+                <span class="seo-count">מספר גבוה יותר מופיע קודם</span>
+              </div>
+              <div></div>
+            </div>
+            <div class="pf-row-bottom">
+              <label class="pf-check"><input type="checkbox" id="p-featured"> הצג בעמוד הבית</label>
+              <div class="pf-actions">
+                <button type="button" id="projCancel" class="a-btn a-btn-ghost" hidden>ביטול</button>
+                <button type="submit" class="a-btn a-btn-primary">שמירת פרויקט</button>
+              </div>
+            </div>
+          </form>
+          <div class="card">
+            <h3>פרויקטים קיימים (<span id="projCount">0</span>)</h3>
+            <div id="projList" class="proj-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ STORIES ============ -->
+      <section class="view" data-view-panel="stories" hidden>
+        <h2 class="dash-h">ניהול סיפורי הצלחה</h2>
+        <div class="proj-admin">
+          <form id="storyForm" class="card proj-form">
+            <input type="hidden" id="st-id">
+            <h3 id="storyFormTitle">הוספת סיפור חדש</h3>
+            <div class="a-field"><label for="st-title">כותרת הסיפור *</label><input id="st-title" type="text" required placeholder="מחריגת בנייה להסדרה מלאה מול הרשות"></div>
+            <div class="pf-row">
+              <div class="a-field"><label for="st-client">שם הלקוח ויישוב</label><input id="st-client" type="text" placeholder="משפחת כהן, תל אביב"></div>
+              <div class="a-field">
+                <label for="st-cat">תחום</label>
+                <select id="st-cat">
+                  <option value="">(ללא)</option>
+                  <option value="homes">בתים פרטיים</option>
+                  <option value="interior">עיצוב פנים</option>
+                  <option value="permits">היתרים וחריגות</option>
+                  <option value="pools">בריכות</option>
+                  <option value="business">רישוי עסקים</option>
+                  <option value="farms">משקים ונחלות</option>
+                </select>
+              </div>
+            </div>
+            <div class="a-field"><label for="st-image">קישור לתמונה (אופציונלי)</label><input id="st-image" type="text" placeholder="assets/projects/..."></div>
+            <div class="a-field"><label for="st-situation">המצב</label><textarea id="st-situation" rows="2"></textarea></div>
+            <div class="a-field"><label for="st-action">הפעולה</label><textarea id="st-action" rows="2"></textarea></div>
+            <div class="a-field"><label for="st-result">התוצאה</label><textarea id="st-result" rows="2"></textarea></div>
+            <div class="a-field"><label for="st-quote">ציטוט מהלקוח</label><textarea id="st-quote" rows="2"></textarea></div>
+
+            <div class="seo-box">
+              <h4 class="seo-title">הגדרות SEO</h4>
+              <p class="seo-hint">כותרת ותיאור לצורכי מנועי חיפוש. אם משאירים ריק, נשתמש אוטומטית בכותרת הסיפור ובתיאור.</p>
+              <div class="a-field"><label for="st-meta-title">META Title</label><input id="st-meta-title" type="text" maxlength="70"><span class="seo-count" id="st-meta-title-count"></span></div>
+              <div class="a-field"><label for="st-meta-desc">META Description</label><textarea id="st-meta-desc" rows="2" maxlength="180"></textarea><span class="seo-count" id="st-meta-desc-count"></span></div>
+            </div>
+
+            <div class="pf-row-bottom">
+              <label class="pf-check"><input type="checkbox" id="st-published" checked> מוצג באתר</label>
+              <div class="pf-actions">
+                <button type="button" id="storyCancel" class="a-btn a-btn-ghost" hidden>ביטול</button>
+                <button type="submit" class="a-btn a-btn-primary">שמירת סיפור</button>
+              </div>
+            </div>
+          </form>
+          <div class="card">
+            <h3>סיפורים קיימים (<span id="storyCount">0</span>)</h3>
+            <div id="storyList" class="proj-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="view" data-view-panel="settings" hidden>
+        <h2 class="dash-h">מספרים בעמוד הבית</h2>
+        <form id="settingsForm" class="card settings-form">
+          <div class="settings-grid">
+            <div class="a-field"><label for="s-stat_pools">בריכות שנבנו</label><input id="s-stat_pools" type="text"></div>
+            <div class="a-field"><label for="s-stat_clients">לקוחות מרוצים</label><input id="s-stat_clients" type="text"></div>
+            <div class="a-field"><label for="s-stat_years">שנות ניסיון</label><input id="s-stat_years" type="text"></div>
+            <div class="a-field"><label for="s-stat_satisfaction">שביעות רצון (%)</label><input id="s-stat_satisfaction" type="text"></div>
+          </div>
+          <button type="submit" class="a-btn a-btn-primary">שמירת הגדרות</button>
+          <span id="settingsSaved" class="saved-note" hidden>נשמר ✓</span>
+        </form>
+
+        <h2 class="dash-h">תגיות META לעמודי האתר</h2>
+        <form id="pageMetaForm" class="card settings-form">
+          <p class="seo-hint">כאן ניתן לקבוע את הכותרת והתיאור של כל עמוד באתר, כפי שיופיעו בגוגל וברשתות. אם משאירים שדה ריק, נשאר הטקסט המקורי של העמוד (מופיע כרקע אפור בשדה).</p>
+          <div id="pageMetaList" class="page-meta-list"></div>
+          <button type="submit" class="a-btn a-btn-primary">שמירת תגיות META</button>
+          <span id="pageMetaSaved" class="saved-note" hidden>נשמר ✓</span>
+        </form>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/admin-guard.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>כניסה לניהול | David Balaish Architecture</title>
+<link rel="icon" href="assets/logo.jpg">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+
+<section id="loginView" class="login-view">
+  <form id="loginForm" class="login-card">
+    <div class="login-logo"><b>DAVID BALAISH</b><em>ADMIN</em></div>
+    <h1>כניסה לניהול</h1>
+    <div class="a-field">
+      <label for="lg-pin">קוד כניסה</label>
+      <input id="lg-pin" class="pin-input" type="text" inputmode="numeric" pattern="[0-9]*"
+             autocomplete="off" maxlength="10" required autofocus>
+    </div>
+    <button type="submit" class="a-btn a-btn-primary" style="width:100%;">התחברות</button>
+    <p id="loginErr" class="login-err" hidden>קוד שגוי</p>
+  </form>
+</section>
+
+<script src="assets/admin-guard.js"></script>
+<script src="assets/admin-login.js"></script>
+</body>
+</html>

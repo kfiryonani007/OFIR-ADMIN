@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 440" role="img" aria-label="Topweb">
+  <title>Topweb</title>
+  <!-- dark ring, open at the upper right where the arrow breaks out -->
+  <path fill="#2D2D2D" d="M392.4 196.0
+    A 190 190 0 1 1 273.0 63.5
+    L 248.4 131.1
+    A 118 118 0 1 0 322.5 213.5
+    Z"/>
+  <!-- red arrow pointing out of the ring toward the upper right -->
+  <path fill="#F63C4E" d="M268 28
+    L 412 28
+    L 412 172
+    L 366.2 126.2
+    L 302.6 189.8
+    L 250.2 137.4
+    L 313.8 73.8
+    Z"/>
+</svg>
