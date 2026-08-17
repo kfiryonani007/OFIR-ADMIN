@@ -51,40 +51,30 @@ app.use(express.json({ limit: '256kb' }));
 function str(v) { return v == null ? '' : String(v); }
 
 /* ============================================================
-   LEAD EMAIL NOTIFICATION — optional. If RESEND_API_KEY /
-   LEAD_NOTIFY_EMAIL aren't set, this quietly does nothing: leads
-   still save to Supabase and show in the admin panel either way,
-   so a misconfigured or down email provider never blocks a lead.
+   LEAD EMAIL NOTIFICATION — via formsubmit.co, which needs no
+   account or API key: the destination inbox just has to click a
+   one-time "confirm" link the first time a submission arrives.
+   Wrapped in try/catch with a timeout so a slow or failing email
+   relay never blocks or fails the lead — it's already safely in
+   Supabase and visible in the admin panel either way.
    ============================================================ */
+const LEAD_NOTIFY_EMAIL = 'davidbalaish1@gmail.com';
 const SERVICE_LABELS = {
   homes: 'בתים פרטיים', interior: 'עיצוב ותכנון פנים', permits: 'היתרי בנייה והסדרת חריגות',
   pools: 'בריכות שחייה', business: 'רישוי עסקים', farms: 'משקים ונחלות', other: 'אחר'
 };
-function esc(v) { return str(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 async function sendLeadNotification(lead) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.LEAD_NOTIFY_EMAIL;
-  if (!apiKey || !to) return;
-  const rows = [
-    ['שם', lead.name], ['טלפון', lead.phone], ['אימייל', lead.email], ['עיר', lead.city],
-    ['שירות מבוקש', SERVICE_LABELS[lead.service] || lead.service], ['הודעה', lead.message],
-    ['הגיע מדף', lead.source_page]
-  ].filter(([, v]) => str(v).trim());
-  const html = '<div dir="rtl" style="font-family:sans-serif;font-size:15px;line-height:1.7;">' +
-    '<h2>פנייה חדשה מהאתר</h2>' +
-    rows.map(([k, v]) => `<p><b>${esc(k)}:</b> ${esc(v)}</p>`).join('') +
-    '</div>';
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
   try {
-    const r = await fetch('https://api.resend.com/emails', {
+    const r = await fetch(`https://formsubmit.co/ajax/${LEAD_NOTIFY_EMAIL}`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        from: 'David Balaish Architecture <onboarding@resend.dev>',
-        to: [to],
-        subject: `פנייה חדשה מהאתר — ${lead.name || 'ללא שם'}`,
-        html
+        _subject: `פנייה חדשה מהאתר — ${lead.name || 'ללא שם'}`,
+        'שם': str(lead.name), 'טלפון': str(lead.phone), 'אימייל': str(lead.email),
+        'עיר': str(lead.city), 'שירות מבוקש': SERVICE_LABELS[lead.service] || str(lead.service),
+        'הודעה': str(lead.message), 'הגיע מדף': str(lead.source_page)
       }),
       signal: controller.signal
     });
