@@ -14,6 +14,7 @@ const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -326,6 +327,31 @@ app.get('/api/admin/analytics', requireAdmin, async (req, res) => {
     topClicks: tally(clicks, r => r.target, '—').slice(0, 8),
     viewsByDay: days.map(label => ({ label, n: byDay[label] || 0 }))
   });
+});
+
+/* ---------- image upload (project/story photos → Supabase Storage) ---------- */
+// memory storage: Vercel's serverless filesystem is read-only/ephemeral, so
+// the file is buffered in RAM and pushed straight to Supabase Storage rather
+// than written to disk. The client resizes/compresses before sending, but the
+// limit here is the hard backstop against an oversized or unexpected upload.
+const ALLOWED_IMAGE_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
+app.post('/api/admin/upload', requireAdmin, (req, res, next) => {
+  upload.single('file')(req, res, err => {
+    if (err) return res.status(400).json({ error: 'upload_failed', message: err.message });
+    next();
+  });
+}, async (req, res) => {
+  const file = req.file;
+  if (!file) return res.status(400).json({ error: 'no_file' });
+  const ext = ALLOWED_IMAGE_TYPES[file.mimetype];
+  if (!ext) return res.status(400).json({ error: 'unsupported_type' });
+  const name = `uploads/${Date.now()}-${crypto.randomBytes(4).toString('hex')}.${ext}`;
+  const { error } = await supabase.storage.from('project-images')
+    .upload(name, file.buffer, { contentType: file.mimetype, upsert: false });
+  if (error) return res.status(500).json({ error: 'storage_failed', message: error.message });
+  const { data } = supabase.storage.from('project-images').getPublicUrl(name);
+  res.json({ ok: true, url: data.publicUrl });
 });
 
 /* ---------- projects CRUD ---------- */

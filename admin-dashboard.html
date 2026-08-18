@@ -139,8 +139,20 @@
                 <label><input type="checkbox" value="farms"> משקים ונחלות</label>
               </div>
             </div>
-            <div class="a-field"><label for="p-image">קישור לתמונה ראשית</label><input id="p-image" type="text" placeholder="assets/projects/..."></div>
-            <div class="a-field"><label for="p-gallery">גלריית תמונות נוספות (קישור בכל שורה)</label><textarea id="p-gallery" rows="4" placeholder="assets/projects/xxx/01.webp&#10;assets/projects/xxx/02.webp"></textarea></div>
+            <div class="a-field">
+              <label>תמונה ראשית</label>
+              <div class="img-upload-single" id="p-image-box"><div class="img-upload-empty">לא נבחרה תמונה</div></div>
+              <label class="a-btn a-btn-ghost img-upload-btn">בחירת תמונה<input type="file" id="p-image-file" accept="image/jpeg,image/png,image/webp" hidden></label>
+              <span class="img-upload-status" id="p-image-status"></span>
+              <input type="hidden" id="p-image">
+            </div>
+            <div class="a-field">
+              <label>גלריית תמונות נוספות</label>
+              <div class="img-upload-grid" id="p-gallery-grid"></div>
+              <label class="a-btn a-btn-ghost img-upload-btn">הוספת תמונות<input type="file" id="p-gallery-file" accept="image/jpeg,image/png,image/webp" multiple hidden></label>
+              <span class="img-upload-status" id="p-gallery-status"></span>
+              <textarea id="p-gallery" hidden></textarea>
+            </div>
             <div class="a-field"><label for="p-summary">תיאור קצר</label><textarea id="p-summary" rows="2"></textarea></div>
             <div class="pf-row">
               <div class="a-field"><label for="p-challenge">האתגר</label><textarea id="p-challenge" rows="2"></textarea></div>
@@ -201,7 +213,13 @@
                 </select>
               </div>
             </div>
-            <div class="a-field"><label for="st-image">קישור לתמונה (אופציונלי)</label><input id="st-image" type="text" placeholder="assets/projects/..."></div>
+            <div class="a-field">
+              <label>תמונה (אופציונלי)</label>
+              <div class="img-upload-single" id="st-image-box"><div class="img-upload-empty">לא נבחרה תמונה</div></div>
+              <label class="a-btn a-btn-ghost img-upload-btn">בחירת תמונה<input type="file" id="st-image-file" accept="image/jpeg,image/png,image/webp" hidden></label>
+              <span class="img-upload-status" id="st-image-status"></span>
+              <input type="hidden" id="st-image">
+            </div>
             <div class="a-field"><label for="st-situation">המצב</label><textarea id="st-situation" rows="2"></textarea></div>
             <div class="a-field"><label for="st-action">הפעולה</label><textarea id="st-action" rows="2"></textarea></div>
             <div class="a-field"><label for="st-result">התוצאה</label><textarea id="st-result" rows="2"></textarea></div>

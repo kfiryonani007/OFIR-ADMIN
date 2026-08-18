@@ -211,6 +211,100 @@
     c.classList.toggle('over', n >= max);
   }
 
+  /* ---------- image upload (project/story photos) ----------
+     Resized client-side before upload, both to stay well under the
+     server's size limit and so a phone photo doesn't ship at full
+     multi-MB size just to be shown as a card thumbnail. ---------- */
+  function resizeImage(file, maxDim, quality) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        URL.revokeObjectURL(url);
+        var scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+        var cw = Math.round(img.naturalWidth * scale), ch = Math.round(img.naturalHeight * scale);
+        var canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
+        canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('resize_failed')); }, 'image/jpeg', quality);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('load_failed')); };
+      img.src = url;
+    });
+  }
+  function uploadImage(file) {
+    return resizeImage(file, 2000, 0.85).then(function (blob) {
+      var fd = new FormData();
+      fd.append('file', blob, 'photo.jpg');
+      return fetch('/api/admin/upload', { method: 'POST', credentials: 'include', body: fd });
+    }).then(checkOk).then(function (r) { return r.json(); }).then(function (d) { return d.url; });
+  }
+  function linesOf(hidden) { return hidden.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); }
+  // single-image field: box shows either an empty placeholder or a thumbnail
+  // with a remove (x); the hidden input stays the single source of truth so
+  // the existing submit-payload code (reads hidden.value) needs no changes.
+  function wireSingleImageField(hiddenId, boxId, fileId, statusId) {
+    var hidden = document.getElementById(hiddenId), box = document.getElementById(boxId);
+    var fileInput = document.getElementById(fileId), status = document.getElementById(statusId);
+    function render() {
+      box.innerHTML = hidden.value
+        ? '<div class="img-upload-thumb"><img src="' + esc(hidden.value) + '" alt=""><span class="img-upload-remove" title="הסרה">&times;</span></div>'
+        : '<div class="img-upload-empty">לא נבחרה תמונה</div>';
+    }
+    box.addEventListener('click', function (e) {
+      if (!e.target.closest('.img-upload-remove')) return;
+      hidden.value = '';
+      render();
+    });
+    fileInput.addEventListener('change', function () {
+      var file = fileInput.files[0];
+      fileInput.value = '';
+      if (!file) return;
+      status.textContent = 'מעלה...';
+      uploadImage(file).then(function (url) {
+        hidden.value = url; status.textContent = ''; render();
+      }).catch(function () { status.textContent = 'ההעלאה נכשלה, נסו שוב.'; });
+    });
+    return render;
+  }
+  // gallery field: same idea, but the hidden textarea holds one URL per line
+  // (unchanged from the old manual-paste format) so it's still a plain
+  // newline list on submit — only how it gets filled in has changed.
+  function wireGalleryField(gridId, hiddenId, fileId, statusId) {
+    var grid = document.getElementById(gridId), hidden = document.getElementById(hiddenId);
+    var fileInput = document.getElementById(fileId), status = document.getElementById(statusId);
+    function render() {
+      grid.innerHTML = linesOf(hidden).map(function (u, i) {
+        return '<div class="img-upload-thumb" data-i="' + i + '"><img src="' + esc(u) + '" alt=""><span class="img-upload-remove" title="הסרה">&times;</span></div>';
+      }).join('');
+    }
+    grid.addEventListener('click', function (e) {
+      var thumb = e.target.closest('.img-upload-thumb');
+      if (!thumb || !e.target.closest('.img-upload-remove')) return;
+      var urls = linesOf(hidden);
+      urls.splice(Number(thumb.getAttribute('data-i')), 1);
+      hidden.value = urls.join('\n');
+      render();
+    });
+    fileInput.addEventListener('change', function () {
+      var files = Array.prototype.slice.call(fileInput.files);
+      fileInput.value = '';
+      if (!files.length) return;
+      status.textContent = 'מעלה ' + files.length + ' תמונות...';
+      Promise.allSettled(files.map(uploadImage)).then(function (results) {
+        var okUrls = results.filter(function (r) { return r.status === 'fulfilled'; }).map(function (r) { return r.value; });
+        var failCount = results.length - okUrls.length;
+        hidden.value = linesOf(hidden).concat(okUrls).join('\n');
+        status.textContent = failCount ? (failCount + ' תמונות נכשלו, נסו שוב.') : '';
+        render();
+      });
+    });
+    return render;
+  }
+  var renderPImage = wireSingleImageField('p-image', 'p-image-box', 'p-image-file', 'p-image-status');
+  var renderPGallery = wireGalleryField('p-gallery-grid', 'p-gallery', 'p-gallery-file', 'p-gallery-status');
+  var renderStImage = wireSingleImageField('st-image', 'st-image-box', 'st-image-file', 'st-image-status');
+
   /* ---------- projects ---------- */
   var projForm = document.getElementById('projForm');
 
@@ -254,9 +348,11 @@
     document.getElementById('p-title').value = p.title || '';
     document.getElementById('p-city').value = p.city || '';
     document.getElementById('p-image').value = p.image_url || '';
+    renderPImage();
     var gallery = [];
     try { gallery = p.gallery ? JSON.parse(p.gallery) : []; } catch (e) { gallery = []; }
     document.getElementById('p-gallery').value = gallery.join('\n');
+    renderPGallery();
     document.getElementById('p-summary').value = p.summary || '';
     document.getElementById('p-challenge').value = p.challenge || '';
     document.getElementById('p-solution').value = p.solution || '';
@@ -276,6 +372,8 @@
     projForm.reset();
     document.getElementById('p-id').value = '';
     document.getElementById('p-sort').value = 0;
+    renderPImage();
+    renderPGallery();
     document.getElementById('projFormTitle').textContent = 'הוספת פרויקט חדש';
     document.getElementById('projCancel').hidden = true;
     syncProjSeo();
@@ -373,6 +471,7 @@
     document.getElementById('st-client').value = s.client || '';
     document.getElementById('st-cat').value = s.category || '';
     document.getElementById('st-image').value = s.image_url || '';
+    renderStImage();
     document.getElementById('st-situation').value = s.situation || '';
     document.getElementById('st-action').value = s.action || '';
     document.getElementById('st-result').value = s.result || '';
@@ -389,6 +488,7 @@
     storyForm.reset();
     document.getElementById('st-id').value = '';
     document.getElementById('st-published').checked = true;
+    renderStImage();
     document.getElementById('storyFormTitle').textContent = 'הוספת סיפור חדש';
     document.getElementById('storyCancel').hidden = true;
     syncStorySeo();
