@@ -124,12 +124,13 @@
     if (ctx && HEADINGS[ctx]) dynHead.textContent = HEADINGS[ctx];
   }
 
-  /* ---------- lead form: validate + honeypot + email delivery ----------
-     formsubmit.co, called straight from the visitor's own browser — it
-     needs a real page Referer to accept a request at all, which only a
-     browser sends automatically. A server-side relay (tried first) got
-     silently rejected: no error, just never delivered. ---------- */
-  var LEAD_EMAIL_URL = 'https://formsubmit.co/ajax/davidbalaish1@gmail.com';
+  /* ---------- lead form: validate + honeypot + WhatsApp delivery ----------
+     David wants leads on WhatsApp, not email. There's no server-side way
+     to place a WhatsApp message for someone without a paid business API,
+     so this hands the visitor a pre-filled chat to David's number and
+     lets them tap send — same interaction as the site's existing
+     WhatsApp button, just pre-filled with what they typed. ---------- */
+  var WHATSAPP_NUMBER = '972503851111';
   document.querySelectorAll('form.lead-form').forEach(function (form) {
     var statusEl = form.querySelector('.form-status');
     var submitBtn = form.querySelector('button[type="submit"]');
@@ -178,16 +179,12 @@
       ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (u) {
         payload[u] = params.get(u) || '';
       });
-      // Formspree conventions: _subject sets the notification email's subject,
-      // _replyto lets you hit "reply" and answer the customer directly.
-      payload._subject = 'פנייה חדשה מהאתר: ' + (payload.service || 'David Balaish Architecture') + (payload.name ? ' | ' + payload.name : '');
-      if (payload.email) payload._replyto = payload.email;
 
       if (submitBtn) { submitBtn.classList.add('loading'); submitBtn.disabled = true; }
       setStatus('שולח…', true);
 
-      // Best-effort: also store the lead in our own DB (admin dashboard).
-      // Fire-and-forget so it never blocks or fails the email delivery.
+      // Best-effort: store the lead in our own DB (admin dashboard) too —
+      // fire-and-forget so a slow/failed save never blocks the WhatsApp handoff.
       try {
         fetch('/api/lead', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -200,22 +197,17 @@
         }).catch(function () {});
       } catch (e) {}
 
-      fetch(LEAD_EMAIL_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(function (r) { return r.json().then(function (result) { return { ok: r.ok, result: result }; }); })
-        .then(function (res) {
-        if (res.ok && (res.result.success === 'true' || res.result.success === true)) {
-          try { sessionStorage.setItem('dba_lead', '1'); } catch (err) {}
-          window.location.href = 'thank-you.html';
-        } else {
-          throw new Error((res.result && res.result.message) || 'unknown');
-        }
-      }).catch(function () {
-        if (submitBtn) { submitBtn.classList.remove('loading'); submitBtn.disabled = false; }
-        setStatus('אירעה תקלה בשליחה. ניתן להתקשר 050-385-1111 או לשלוח מייל.', false);
-      });
+      var lines = [
+        'פנייה חדשה מהאתר',
+        'שם: ' + (payload.name || ''),
+        'טלפון: ' + (payload.phone || ''),
+        payload.email ? 'אימייל: ' + payload.email : '',
+        payload.city ? 'עיר: ' + payload.city : '',
+        payload.service ? 'שירות: ' + payload.service : '',
+        payload.message ? 'הודעה: ' + payload.message : ''
+      ].filter(Boolean);
+      try { sessionStorage.setItem('dba_lead', '1'); } catch (err) {}
+      window.location.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
     });
   });
 
