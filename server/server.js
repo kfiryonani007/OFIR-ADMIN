@@ -64,13 +64,23 @@ const SERVICE_LABELS = {
   homes: 'בתים פרטיים', interior: 'עיצוב ותכנון פנים', permits: 'היתרי בנייה והסדרת חריגות',
   pools: 'בריכות שחייה', business: 'רישוי עסקים', farms: 'משקים ונחלות', other: 'אחר'
 };
-async function sendLeadNotification(lead) {
+// formsubmit.co treats a request with no Referer as a page opened straight
+// off disk (its actual anti-abuse check, worded confusingly) and silently
+// no-ops it with HTTP 200 + {success:"false"} in the body — a server-side
+// fetch() never sends one on its own, so this failed on every attempt
+// without ever surfacing an error. Sending an explicit Referer/Origin fixes
+// it; checking the response body (not just r.ok) means a real failure won't
+// go silent again.
+async function sendLeadNotification(lead, siteOrigin) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
   try {
     const r = await fetch(`https://formsubmit.co/ajax/${LEAD_NOTIFY_EMAIL}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: {
+        'Content-Type': 'application/json', Accept: 'application/json',
+        Referer: siteOrigin + '/', Origin: siteOrigin
+      },
       body: JSON.stringify({
         _subject: `פנייה חדשה מהאתר — ${lead.name || 'ללא שם'}`,
         'שם': str(lead.name), 'טלפון': str(lead.phone), 'אימייל': str(lead.email),
@@ -79,7 +89,10 @@ async function sendLeadNotification(lead) {
       }),
       signal: controller.signal
     });
-    if (!r.ok) console.error('Lead email failed:', r.status, await r.text().catch(() => ''));
+    const data = await r.json().catch(() => null);
+    if (!r.ok || !data || data.success === 'false' || data.success === false) {
+      console.error('Lead email failed:', r.status, data);
+    }
   } catch (e) {
     console.error('Lead email error:', e.message);
   } finally {
@@ -181,7 +194,7 @@ app.post('/api/lead', async (req, res) => {
     source_url: str(b.source_url), project_ref: str(b.project_ref)
   });
   if (error) return res.status(500).json({ error: 'insert_failed' });
-  await sendLeadNotification(b);
+  await sendLeadNotification(b, `${isHttps(req) ? 'https' : 'http'}://${req.get('host')}`);
   res.json({ ok: true });
 });
 
