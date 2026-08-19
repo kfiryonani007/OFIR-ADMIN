@@ -539,6 +539,7 @@
         var el = document.getElementById('s-' + k);
         if (el) el.value = s[k] || '';
       });
+      document.getElementById('s-tracking_pixels').value = s.tracking_pixels || '';
     }).catch(noop);
   }
   document.getElementById('settingsForm').addEventListener('submit', function (e) {
@@ -548,6 +549,15 @@
     api('admin/settings', { method: 'PUT', body: JSON.stringify(body) })
       .then(checkOk).then(function () {
         var n = document.getElementById('settingsSaved');
+        n.hidden = false; setTimeout(function () { n.hidden = true; }, 2500);
+      }).catch(showErr);
+  });
+  document.getElementById('pixelsForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var body = { tracking_pixels: document.getElementById('s-tracking_pixels').value };
+    api('admin/settings', { method: 'PUT', body: JSON.stringify(body) })
+      .then(checkOk).then(function () {
+        var n = document.getElementById('pixelsSaved');
         n.hidden = false; setTimeout(function () { n.hidden = true; }, 2500);
       }).catch(showErr);
   });

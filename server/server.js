@@ -477,6 +477,14 @@ function escapeHtml(s) {
 function escapeAttr(s) {
   return escapeHtml(s).replace(/"/g, '&quot;');
 }
+// Raw HTML/JS the admin pastes in (Facebook Pixel, Google Tag, TikTok
+// Pixel, etc.) — not escaped, unlike title/description, because the whole
+// point is to inject it as real markup. Safe because only an authenticated
+// admin session can ever write to it (PUT /api/admin/settings).
+function injectTrackingPixels(html, code) {
+  if (!code || !code.trim()) return html;
+  return html.replace('</head>', code + '\n</head>');
+}
 // Rewrite title/description (+ their Open Graph twins) in an HTML string using
 // whatever override is stored for this page. Blank/absent override = untouched.
 function applyMetaOverrides(html, row) {
@@ -528,9 +536,12 @@ app.get('/sitemap.xml', async (req, res) => {
   );
 });
 
-/* ========== SEO: serve editable static pages with META overrides applied ==========
-   Runs before express.static so the Supabase-managed <title>/description win.
-   Any page without an override (or not in the editable set) just falls through. */
+/* ========== SEO + tracking pixels: serve HTML pages with Supabase-managed
+   overrides applied ==========
+   Runs before express.static. Every public .html page gets the tracking-
+   pixel snippet injected (if one is set); pages in the editable set also
+   get their <title>/description swapped. Admin pages are excluded — their
+   own visits shouldn't count as site traffic in the client's pixels. */
 app.get(/.*/, async (req, res, next) => {
   if (req.method !== 'GET') return next();
   let page;
@@ -539,13 +550,18 @@ app.get(/.*/, async (req, res, next) => {
     const name = req.path.replace(/^\//, '');
     page = /\.html$/i.test(name) ? name : name + '.html';
   }
-  if (!EDITABLE_SET.has(page)) return next();
+  if (!/\.html$/i.test(page) || /^admin/i.test(page)) return next();
   fs.readFile(path.join(SITE_ROOT, page), 'utf8', async (err, html) => {
     if (err) return next();
-    const { data: row } = await supabase.from('page_meta').select('title,description').eq('page', page).maybeSingle();
+    if (EDITABLE_SET.has(page)) {
+      const { data: row } = await supabase.from('page_meta').select('title,description').eq('page', page).maybeSingle();
+      html = applyMetaOverrides(html, row);
+    }
+    const { data: pixelRow } = await supabase.from('settings').select('value').eq('key', 'tracking_pixels').maybeSingle();
+    html = injectTrackingPixels(html, pixelRow && pixelRow.value);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache');
-    res.send(applyMetaOverrides(html, row));
+    res.send(html);
   });
 });
 
