@@ -124,8 +124,12 @@
     if (ctx && HEADINGS[ctx]) dynHead.textContent = HEADINGS[ctx];
   }
 
-  /* ---------- lead form: validate + honeypot + Formspree email delivery ---------- */
-  var FORMSPREE_URL = 'https://formspree.io/f/meeylnnw';
+  /* ---------- lead form: validate + honeypot + email delivery ----------
+     formsubmit.co, called straight from the visitor's own browser — it
+     needs a real page Referer to accept a request at all, which only a
+     browser sends automatically. A server-side relay (tried first) got
+     silently rejected: no error, just never delivered. ---------- */
+  var LEAD_EMAIL_URL = 'https://formsubmit.co/ajax/davidbalaish1@gmail.com';
   document.querySelectorAll('form.lead-form').forEach(function (form) {
     var statusEl = form.querySelector('.form-status');
     var submitBtn = form.querySelector('button[type="submit"]');
@@ -196,17 +200,17 @@
         }).catch(function () {});
       } catch (e) {}
 
-      fetch(FORMSPREE_URL, {
+      fetch(LEAD_EMAIL_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (r) { return r.json().then(function (result) { return { ok: r.ok, result: result }; }); })
         .then(function (res) {
-        if (res.ok && res.result.ok) {
+        if (res.ok && (res.result.success === 'true' || res.result.success === true)) {
           try { sessionStorage.setItem('dba_lead', '1'); } catch (err) {}
           window.location.href = 'thank-you.html';
         } else {
-          throw new Error((res.result.errors && res.result.errors[0] && res.result.errors[0].message) || 'unknown');
+          throw new Error((res.result && res.result.message) || 'unknown');
         }
       }).catch(function () {
         if (submitBtn) { submitBtn.classList.remove('loading'); submitBtn.disabled = false; }
