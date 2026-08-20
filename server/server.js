@@ -501,7 +501,7 @@ function applyMetaOverrides(html, row) {
 }
 
 /* ========== SEO: sitemap (dynamic — project pages come from Supabase) ========== */
-const SITE_URL = 'https://davidbalaish.co.il';
+const SITE_URL = 'https://db-arch.co.il';
 const STATIC_PAGES = [
   { path: '/', priority: '1.0', freq: 'weekly' },
   { path: '/about.html', priority: '0.8', freq: 'monthly' },

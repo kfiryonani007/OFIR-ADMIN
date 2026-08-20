@@ -22,4 +22,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://davidbalaish.co.il/sitemap.xml
+Sitemap: https://db-arch.co.il/sitemap.xml

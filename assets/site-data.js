@@ -102,7 +102,7 @@
               item: {
                 '@type': 'CreativeWork',
                 name: p.title,
-                url: 'https://davidbalaish.co.il/project.html?id=' + p.id,
+                url: 'https://db-arch.co.il/project.html?id=' + p.id,
                 description: p.summary || undefined,
                 locationCreated: p.city || undefined
               }
@@ -263,7 +263,7 @@
       var ogDesc = document.querySelector('meta[property="og:description"]');
       if (ogDesc && descVal) ogDesc.setAttribute('content', descVal);
       var canon = document.querySelector('link[rel="canonical"]');
-      if (canon) canon.setAttribute('href', 'https://davidbalaish.co.il/project.html?id=' + encodeURIComponent(p.id));
+      if (canon) canon.setAttribute('href', 'https://db-arch.co.il/project.html?id=' + encodeURIComponent(p.id));
       setText('pd-title', p.title);
       setText('pd-crumb', (p.title || '') + (p.city ? ', ' + p.city : ''));
       setText('pd-summary', p.summary);
